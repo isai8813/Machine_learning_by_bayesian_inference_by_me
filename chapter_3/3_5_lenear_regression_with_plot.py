@@ -45,7 +45,7 @@ def plot_a_sampled_regression_model(m_hat, xmin, xmax, N, ax, no_n=False):
         ax.plot(x, y, label=f"{N}")
     else:
         ax.plot(x, y, label=f"n={N}")
-    
+
 def plot_sampled_data(ax, x_plot, y_plot):
     ax.scatter(x_plot, y_plot)
 
@@ -78,7 +78,7 @@ if __name__  == "__main__":
             y = np.array([])
             plot_sampled_data(ax, x_only, y)
             plot_a_sampled_regression_model(m, xmin, xmax, N, ax)
-        if N != 0:  
+        if N != 0:
             x_only, x, y = generate_data(w, lam, step, xmin, xmax)
             X.append(x)
             Y.append(y)
