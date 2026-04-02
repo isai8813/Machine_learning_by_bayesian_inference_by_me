@@ -82,7 +82,7 @@ if __name__  == "__main__":
     N=300
     # parameters for plot
     maxi = 10+distance*k
-    fig = plt.figure(figsize=(8, 5))
+    fig = plt.figure(figsize=(10, 6))
     ax1 = fig.add_subplot()
     ax2 = ax1.twinx()
     x = generate_data(pi_gene, lam_gene, k, N)

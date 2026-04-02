@@ -143,7 +143,7 @@ if __name__  == "__main__":
     print(f"lambda true:{lam}, fitted value:{a_hat / b_hat}")
     print(f"A \ntrue:\n{A}\nfitted value:\n{A_ave}")
     print(f"")
-    fig = plt.figure(figsize=(8, 5))
+    fig = plt.figure(figsize=(10, 6))
     ax1 = fig.add_subplot(211)
     ax2 = fig.add_subplot(212)
     plot_sampled_data(ax1, x, N)
