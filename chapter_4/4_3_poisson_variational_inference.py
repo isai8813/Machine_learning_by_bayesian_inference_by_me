@@ -21,14 +21,15 @@ def E_lambda_log(a,b):
 def E_pi_log(alpha):
     return scipy.special.digamma(alpha) - scipy.special.digamma(sum(alpha))
 
-def calculate_posterior_parameters(a, b, alpha, X, N, maxiter):
-    a_hat = np.array([2, 3])
-    b_hat = np.array([2, 3])
+def calculate_posterior_parameters(a, b, alpha, X, k, N, maxiter):
+    a_hat = np.full(k, a)
+    b_hat = np.full(k, b)
+    alpha_hat = alpha
     for i in range(maxiter):
         # S
         eta_list = []
         for n in range(N):
-            eta_n = np.exp(X[n]*E_lambda_log(a_hat, b_hat) - E_lambda(a_hat, b_hat) + E_pi_log(alpha))
+            eta_n = np.exp(X[n]*E_lambda_log(a_hat, b_hat) - E_lambda(a_hat, b_hat) + E_pi_log(alpha_hat))
             eta_n = eta_n / sum(eta_n)
             eta_list.append(eta_n)
         eta = np.stack(eta_list)
@@ -51,8 +52,8 @@ def fitted_function(x, a_hat, b_hat, alpha_hat, k):
         y += pi[i]*scipy.stats.poisson.pmf(x, lam[i])
     return y
 
-def plot_fitted_distribution(a_hat, b_hat, alpha_hat, k, ax):
-    x = np.arange(start=0, stop=50+1, step=1)
+def plot_fitted_distribution(a_hat, b_hat, alpha_hat, k, maxi, ax):
+    x = np.arange(start=0, stop=maxi+1, step=1)
     y = fitted_function(x, a_hat, b_hat, alpha_hat, k)
     ax.bar(x, y, color='gray', alpha=0.5, width=0.7)
     ax.grid(True)
@@ -63,25 +64,29 @@ def show_all(ax1, ax2):
     h2, l2 = ax2.get_legend_handles_labels()
     ax1.legend(h1+h2, l1+l2, loc='lower right')
     plt.show()
-    
+
 if __name__  == "__main__":
-    k = 2
+    k = 3
     # parameters for generating data
-    pi_gene = np.array((0.7, 0.3))
-    lam_gene = np.array((10, 30))
-    # # hyper parameters
+    distance = 30
+    pi_gene = np.full(k, 1/k)
+    lam_gene = np.arange(10,10+distance*k, distance)
+    # hyper parameters
     a = 1
     b = 1
-    alpha = np.ones(k)*1
+    # alpha = np.ones(k)*1
+    alpha = np.arange(1, k+1)
     # number of epoch
     maxiter = 30
     # number of data
-    N=100
+    N=300
+    # parameters for plot
+    maxi = 10+distance*k
     fig = plt.figure(figsize=(8, 5))
     ax1 = fig.add_subplot()
     ax2 = ax1.twinx()
     x = generate_data(pi_gene, lam_gene, k, N)
     eta, a_hat, b_hat, alpha_hat = calculate_posterior_parameters(a, b, alpha, x, k, N, maxiter)
     plot_sampled_data(ax1, x)
-    plot_fitted_distribution(a_hat, b_hat, alpha_hat, k, ax2)
+    plot_fitted_distribution(a_hat, b_hat, alpha_hat, k, maxi, ax2)
     show_all(ax1, ax2)
